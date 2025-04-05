@@ -2,6 +2,7 @@ public class Activity
 {
     public int Id { get; set; }
     public required Athlete Athlete { get; set; }
+    public required int AthleteId { get; set; }
     public required string Name { get; set; }
     public required string SportType { get; set; }
     public DateTime StartTime { get; set; }
@@ -16,5 +17,6 @@ public class Activity
     public double? AveragePower { get; set; }
     public int? MaxPower { get; set; }
     public Workout? Workout { get; set; } 
+    public int? WorkoutId { get; set; }
     public Equipment? Equipment { get; set; }
 }

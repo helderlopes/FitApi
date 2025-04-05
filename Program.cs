@@ -1,13 +1,13 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Configuration;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddCors(options => {});
+
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-builder.Services.AddDbContext<AthleteDb>(options => options.UseNpgsql(connectionString));
+builder.Services.AddDbContext<FitDb>(options => options.UseNpgsql(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -31,16 +31,16 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-app.MapGet("/athletes", async (AthleteDb db) =>
+app.MapGet("/athletes", async (FitDb db) =>
     await db.Athletes.ToListAsync());
 
-app.MapGet("/athlete/{id}", async (int id, AthleteDb db) =>
+app.MapGet("/athlete/{id}", async (int id, FitDb db) =>
     await db.Athletes.FindAsync(id)
         is Athlete athlete
             ? Results.Ok(athlete)
             : Results.NotFound());
 
-app.MapPost("/athlete", async (Athlete athlete, AthleteDb db) =>
+app.MapPost("/athlete", async (Athlete athlete, FitDb db) =>
 {
     db.Athletes.Add(athlete);
     await db.SaveChangesAsync();
@@ -48,7 +48,7 @@ app.MapPost("/athlete", async (Athlete athlete, AthleteDb db) =>
     return Results.Created($"/athlete/{athlete.Id}", athlete);
 });
 
-app.MapPut("/athlete/{id}", async (int id, Athlete inputAthlete, AthleteDb db) =>
+app.MapPut("/athlete/{id}", async (int id, Athlete inputAthlete, FitDb db) =>
 {
     var athlete = await db.Athletes.FindAsync(id);
 
@@ -67,7 +67,7 @@ app.MapPut("/athlete/{id}", async (int id, Athlete inputAthlete, AthleteDb db) =
     return Results.NoContent();
 });
 
-app.MapDelete("/athlete/{id}", async (int id, AthleteDb db) =>
+app.MapDelete("/athlete/{id}", async (int id, FitDb db) =>
 {
     if (await db.Athletes.FindAsync(id) is Athlete athlete)
     {

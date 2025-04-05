@@ -1,5 +1,6 @@
 public class WorkoutStep
 {
+    public int Id { get; set; }
     public int Order { get; set; }
     public required string Type { get; set; }
     public TimeSpan Duration { get; set; }
@@ -8,4 +9,5 @@ public class WorkoutStep
     public int? TargetMinPower { get; set; }
     public int? TargetMaxPower { get; set; }
     public required Workout Workout { get; set; }
+    public required int WorkoutId { get; set; }
 }
