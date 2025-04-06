@@ -8,6 +8,8 @@ builder.Services.AddCors(options => {});
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<FitDb>(options => options.UseNpgsql(connectionString));
+builder.Services.AddScoped(typeof(IRepository<>), typeof(PostgresRepository<>));
+builder.Services.AddScoped<AthleteService>();
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -31,16 +33,19 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-app.MapGet("/athletes", async (FitDb db) =>
-    await db.Athletes.ToListAsync());
+app.MapGet("/athletes", async (AthleteService service) =>
+{
+    var athletes = await service.GetAllAsync();
+    return Results.Ok(athletes);
+});
 
-app.MapGet("/athlete/{id}", async (int id, FitDb db) =>
-    await db.Athletes.FindAsync(id)
-        is Athlete athlete
-            ? Results.Ok(athlete)
-            : Results.NotFound());
+app.MapGet("/athletes/{id}", async (int id, AthleteService service) =>
+{
+    var athlete = await service.GetByIdAsync(id);
+    return athlete is not null ? Results.Ok(athlete) : Results.NotFound();
+});
 
-app.MapPost("/athlete", async (Athlete athlete, FitDb db) =>
+app.MapPost("/athletes", async (Athlete athlete, FitDb db) =>
 {
     db.Athletes.Add(athlete);
     await db.SaveChangesAsync();
@@ -48,7 +53,7 @@ app.MapPost("/athlete", async (Athlete athlete, FitDb db) =>
     return Results.Created($"/athlete/{athlete.Id}", athlete);
 });
 
-app.MapPut("/athlete/{id}", async (int id, Athlete inputAthlete, FitDb db) =>
+app.MapPut("/athletes/{id}", async (int id, Athlete inputAthlete, FitDb db) =>
 {
     var athlete = await db.Athletes.FindAsync(id);
 
@@ -67,7 +72,7 @@ app.MapPut("/athlete/{id}", async (int id, Athlete inputAthlete, FitDb db) =>
     return Results.NoContent();
 });
 
-app.MapDelete("/athlete/{id}", async (int id, FitDb db) =>
+app.MapDelete("/athletes/{id}", async (int id, FitDb db) =>
 {
     if (await db.Athletes.FindAsync(id) is Athlete athlete)
     {

@@ -1,10 +1,10 @@
 public class Activity
 {
     public int Id { get; set; }
-    public required Athlete Athlete { get; set; }
-    public required int AthleteId { get; set; }
-    public required string Name { get; set; }
-    public required string SportType { get; set; }
+    public Athlete? Athlete { get; set; }
+    public int AthleteId { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string SportType { get; set; } = string.Empty;
     public DateTime StartTime { get; set; }
     public TimeSpan MovingTime { get; set; }
     public TimeSpan ElapsedTime { get; set; }
@@ -19,4 +19,5 @@ public class Activity
     public Workout? Workout { get; set; } 
     public int? WorkoutId { get; set; }
     public Equipment? Equipment { get; set; }
+    public int? EquipmentId { get; set;}
 }

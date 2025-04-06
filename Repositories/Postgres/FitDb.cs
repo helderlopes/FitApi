@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
-class FitDb : DbContext
+public class FitDb : DbContext
 {
     public DbSet<Activity> Activities => Set<Activity>();
     public DbSet<Athlete> Athletes => Set<Athlete>();
@@ -14,10 +13,10 @@ class FitDb : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Activity>()
-        .HasOne(a => a.Equipment)
-        .WithOne(e => e.Activity)
-        .HasForeignKey<Equipment>(e => e.ActivityId)
+        modelBuilder.Entity<Equipment>()
+        .HasMany(e => e.Activities)
+        .WithOne(a => a.Equipment)
+        .HasForeignKey(a => a.EquipmentId)
         .IsRequired(false);
 
         modelBuilder.Entity<Workout>()
