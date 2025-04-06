@@ -45,43 +45,22 @@ app.MapGet("/athletes/{id}", async (int id, AthleteService service) =>
     return athlete is not null ? Results.Ok(athlete) : Results.NotFound();
 });
 
-app.MapPost("/athletes", async (Athlete athlete, FitDb db) =>
+app.MapPost("/athletes", async (AthleteCreateDto dto, AthleteService service) =>
 {
-    db.Athletes.Add(athlete);
-    await db.SaveChangesAsync();
-
-    return Results.Created($"/athlete/{athlete.Id}", athlete);
+    var created = await service.CreateAsync(dto);
+    return Results.Created($"/athletes/{created.Id}", created);
 });
 
-app.MapPut("/athletes/{id}", async (int id, Athlete inputAthlete, FitDb db) =>
+app.MapPut("/athletes/{id}", async (int id, AthleteUpdateDto dto, AthleteService service) =>
 {
-    var athlete = await db.Athletes.FindAsync(id);
-
-    if (athlete is null) return Results.NotFound();
-
-    athlete.Name = inputAthlete.Name;
-    athlete.DateOfBirth = inputAthlete.DateOfBirth;
-    athlete.Weight = inputAthlete.Weight;
-    athlete.Height = inputAthlete.Height;
-    athlete.Equipments = inputAthlete.Equipments;
-    athlete.Activities = inputAthlete.Activities;
-    athlete.Workouts = inputAthlete.Workouts;
-
-    await db.SaveChangesAsync();
-
-    return Results.NoContent();
+    var success = await service.UpdateAsync(id, dto);
+    return success ? Results.NoContent() : Results.NotFound();
 });
 
-app.MapDelete("/athletes/{id}", async (int id, FitDb db) =>
+app.MapDelete("/athletes/{id}", async (int id, AthleteService service) =>
 {
-    if (await db.Athletes.FindAsync(id) is Athlete athlete)
-    {
-        db.Athletes.Remove(athlete);
-        await db.SaveChangesAsync();
-        return Results.NoContent();
-    }
-
-    return Results.NotFound();
+    var success = await service.DeleteAsync(id);
+    return success ? Results.NoContent() : Results.NotFound();
 });
 
 app.Run();

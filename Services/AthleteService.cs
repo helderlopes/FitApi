@@ -36,10 +36,13 @@ public class AthleteService
         return ToReadDto(created);
     }
 
-    public async Task UpdateAsync(int id, AthleteUpdateDto dto)
+    public async Task<bool> UpdateAsync(int id, AthleteUpdateDto dto)
     {
         var existing = await _repository.GetByIdAsync(id);
-        if (existing == null) throw new Exception("Athlete not found");
+        if (existing == null)
+        {
+            return false;
+        }
 
         existing.Name = dto.Name ?? existing.Name;
         existing.Age = dto.Age ?? existing.Age;
@@ -50,11 +53,19 @@ public class AthleteService
         existing.Workouts = dto.WorkoutIds?.Select(id => new Workout { Id = id }).ToList();
 
         await _repository.UpdateAsync(existing);
+        return true;
     }
 
-    public async Task DeleteAsync(int id)
+    public async Task<bool> DeleteAsync(int id)
     {
+        var existing = await _repository.GetByIdAsync(id);
+        if (existing == null)
+        {
+            return false;
+        }
+
         await _repository.DeleteAsync(id);
+        return true;
     }
 
     private static AthleteReadDto ToReadDto(Athlete a)
