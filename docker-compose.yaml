@@ -1,0 +1,38 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: fitapi-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: FitDb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - fitapi-net
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fitapi-api
+    ports:
+      - "5000:80"
+    depends_on:
+      - postgres
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=FitDb;Username=postgres;Password=123456
+    networks:
+      - fitapi-net
+
+volumes:
+  postgres_data:
+
+networks:
+  fitapi-net:
+    driver: bridge
