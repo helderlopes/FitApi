@@ -75,6 +75,8 @@ public class AthleteService
             Id = a.Id,
             Name = a.Name,
             Age = a.Age,
+            Weight = a.Weight,
+            Height = a.Height,
             EquipmentIds = a.Equipments?.Select(e => e.Id).ToList(),
             ActivityIds = a.Activities?.Select(e => e.Id).ToList(),
             WorkoutIds = a.Workouts?.Select(e => e.Id).ToList(),
