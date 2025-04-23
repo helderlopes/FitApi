@@ -15,6 +15,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<FitDb>(options => options.UseNpgsql(connectionString));
 builder.Services.AddScoped(typeof(IRepository<>), typeof(PostgresRepository<>));
 builder.Services.AddScoped<AthleteService>();
+builder.Services.AddScoped<EquipmentService>();
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -85,7 +86,7 @@ app.MapGet("/equipments", async (EquipmentService service) =>
     var equipments = await service.GetAllAsync();
     return Results.Ok(equipments);
 });
-/*
+
 app.MapGet("/equipments/{id}", async (int id, EquipmentService service) =>
 {
     var equipment = await service.GetByIdAsync(id);
@@ -109,5 +110,5 @@ app.MapDelete("/equipments/{id}", async (int id, EquipmentService service) =>
     var success = await service.DeleteAsync(id);
     return success ? Results.NoContent() : Results.NotFound();
 });
-*/
+
 app.Run();
