@@ -1,7 +1,7 @@
-#how to start:
+# how to start:
 
 docker-compose up --build -d
 
-#how to finish:
+# how to finish:
 
 docker-compose down
