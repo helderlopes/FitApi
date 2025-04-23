@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FitApi.Migrations
 {
     [DbContext(typeof(FitDb))]
-    [Migration("20250413181200_InitialCreate")]
+    [Migration("20250423013132_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

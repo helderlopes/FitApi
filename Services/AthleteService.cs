@@ -27,6 +27,7 @@ public class AthleteService
             Age = dto.Age,
             Weight = dto.Weight,
             Height = dto.Height,
+            //TODO: verify these lists
             Equipments = dto.EquipmentIds?.Select(id => new Equipment { Id = id }).ToList(),
             Activities = dto.ActivityIds?.Select(id => new Activity { Id = id }).ToList(),
             Workouts = dto.WorkoutIds?.Select(id => new Workout { Id = id }).ToList(),
@@ -48,9 +49,18 @@ public class AthleteService
         existing.Age = dto.Age ?? existing.Age;
         existing.Weight = dto.Weight ?? existing.Weight;
         existing.Height = dto.Height ?? existing.Height;
-        existing.Equipments = dto.EquipmentIds?.Select(id => new Equipment { Id = id }).ToList();
-        existing.Activities = dto.ActivityIds?.Select(id => new Activity { Id = id }).ToList();
-        existing.Workouts = dto.WorkoutIds?.Select(id => new Workout { Id = id }).ToList();
+        if (dto.EquipmentIds is not null)
+        {
+            existing.Equipments = dto.EquipmentIds?.Select(id => new Equipment { Id = id }).ToList();
+        }
+        if (dto.ActivityIds is not null)
+        {
+            existing.Activities = dto.ActivityIds?.Select(id => new Activity { Id = id }).ToList();
+        }
+        if (dto.WorkoutIds is not null)
+        {
+            existing.Workouts = dto.WorkoutIds?.Select(id => new Workout { Id = id }).ToList();
+        }
 
         await _repository.UpdateAsync(existing);
         return true;
